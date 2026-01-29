@@ -10,81 +10,108 @@ import time
 # ---------------------------------------------------------
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]: كود التصميم (خلفيات بيضاء للعناوين + سكرول بار)
+# [Visual Styling]: النسخة البيضاء (Light Mode Corporate Style)
 st.markdown("""
 <style>
-    /* 1. الخلفية العامة */
-    .stApp { background-color: #0E1117; color: #FAFAFA; }
+    /* 1. الخلفية العامة والنصوص */
+    .stApp { 
+        background-color: #FFFFFF; /* خلفية بيضاء ناصعة */
+        color: #000000;            /* نص أسود */
+    }
     
-    /* 2. تنسيق العدادات (Metrics) - [تعديل الخلفية البيضاء] */
+    /* 2. تنسيق العدادات (Metrics) */
     
-    /* القيمة (الرقم الكبير الأخضر) */
+    /* القيمة (الرقم الكبير) - أخضر غامق قليلاً للوضوح على الأبيض */
     div[data-testid="stMetricValue"] { 
-        color: #39FF14 !important; 
+        color: #00C853 !important; 
         font-family: 'Courier New', monospace; 
         margin-top: 5px !important;
     }
     
-    /* العنوان العلوي (Label) - خلفية بيضاء وخط أسود */
+    /* العنوان العلوي (Label) */
     div[data-testid="stMetricLabel"] {
-        background-color: #FFFFFF !important; /* خلفية بيضاء */
-        color: #000000 !important;           /* خط أسود */
-        padding: 4px 8px !important;         /* مسافة داخلية */
-        border-radius: 5px !important;       /* حواف دائرية */
+        background-color: #F1F3F4 !important; /* رمادي فاتح جداً كخلفية للعنوان */
+        color: #000000 !important;           /* نص أسود */
+        padding: 4px 8px !important;
+        border-radius: 5px !important;
         font-weight: bold !important;
-        display: inline-block !important;    /* لكي يكون العرض على قد الكلام فقط */
         font-size: 14px !important;
+        display: inline-block !important;
+        border: 1px solid #E0E0E0 !important;
     }
     
-    /* التأكد من أن النص الداخلي أسود أيضاً */
-    div[data-testid="stMetricLabel"] > div, 
+    /* ضمان أن النصوص الداخلية سوداء */
+    div[data-testid="stMetricLabel"] > div,
     div[data-testid="stMetricLabel"] p {
         color: #000000 !important;
     }
 
-    /* 3. البطاقات */
-    .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
+    /* النص السفلي الصغير (Delta) */
+    div[data-testid="stMetricDelta"] {
+        color: #666666 !important; /* رمادي متوسط */
+        font-size: 0.9rem !important;
+    }
+    div[data-testid="stMetricDelta"] svg {
+        fill: #666666 !important;
+    }
+
+    /* 3. البطاقات (KPI Cards) */
+    .kpi-card { 
+        background-color: #F8F9FA;   /* رمادي فاتح جداً */
+        border: 1px solid #DEE2E6;   /* حدود رمادية خفيفة */
+        padding: 15px; 
+        border-radius: 5px; 
+        text-align: center; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* ظل خفيف */
+    }
 
     /* 4. التابات (Tabs) */
     .stTabs [data-baseweb="tab-list"] button {
-        background-color: white !important;
-        color: black !important;
+        background-color: #F1F3F4 !important;
+        color: #000000 !important;
         font-weight: bold !important;
         border-radius: 5px 5px 0px 0px;
+        border: 1px solid #E0E0E0;
+        margin-right: 2px;
     }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        background-color: #f0f0f0 !important;
-        border-bottom: 4px solid #39FF14 !important;
+        background-color: #FFFFFF !important;
+        border-bottom: 4px solid #00C853 !important;
+        color: #000000 !important;
     }
 
-    /* 5. تنسيق شريط التمرير (Scrollbar) */
-    * { scrollbar-width: auto !important; scrollbar-color: #FFFFFF #0E1117 !important; }
-    ::-webkit-scrollbar { width: 22px !important; height: 22px !important; }
-    ::-webkit-scrollbar-track { background: #0E1117 !important; }
-    ::-webkit-scrollbar-thumb { background-color: #FFFFFF !important; border-radius: 12px !important; border: 5px solid #0E1117 !important; }
-    ::-webkit-scrollbar-thumb:hover { background-color: #e6e6e6 !important; }
+    /* 5. تنسيق شريط التمرير (Scrollbar) - غامق ليتناقض مع الأبيض */
+    * { scrollbar-width: auto !important; scrollbar-color: #555555 #FFFFFF !important; }
+    ::-webkit-scrollbar { width: 18px !important; height: 18px !important; }
+    ::-webkit-scrollbar-track { background: #FFFFFF !important; }
+    ::-webkit-scrollbar-thumb { 
+        background-color: #555555 !important; /* شريط رمادي غامق */
+        border-radius: 10px !important; 
+        border: 4px solid #FFFFFF !important; 
+    }
+    ::-webkit-scrollbar-thumb:hover { background-color: #333333 !important; }
 
     /* 6. تنسيق الأزرار (Buttons) */
     div[data-testid="stButton"] > button {
-        background-color: white !important;
-        color: black !important;
-        border: 1px solid #ccc !important;
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 1px solid #CCCCCC !important;
         font-weight: bold !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     div[data-testid="stButton"] > button:hover {
-        background-color: #e0e0e0 !important;
-        border-color: #39FF14 !important;
-        color: black !important;
+        background-color: #F1F3F4 !important;
+        border-color: #00C853 !important;
+        color: #000000 !important;
     }
     /* زر الإيقاف الأحمر */
     div[data-testid="stButton"] > button[kind="primary"] {
-        background-color: #FF4B4B !important;
+        background-color: #D32F2F !important;
         color: white !important;
         border: none !important;
     }
     div[data-testid="stButton"] > button[kind="primary"]:hover {
-        background-color: #ff3333 !important;
-        color: white !important;
+        background-color: #B71C1C !important;
     }
     
     /* 7. توسيع المحتوى */
@@ -93,6 +120,12 @@ st.markdown("""
         padding-bottom: 2rem;
         padding-left: 3rem;
         padding-right: 3rem;
+    }
+    
+    /* 8. تحسين Sidebar في الوضع الفاتح */
+    section[data-testid="stSidebar"] {
+        background-color: #F8F9FA;
+        border-right: 1px solid #DEE2E6;
     }
 
 </style>
@@ -201,10 +234,10 @@ def render_local_view(zone_name):
     
     is_dispatched = st.session_state.zones_data[zone_name]['dispatched_mw'] > 0
     status_text = "INJECTING" if is_dispatched else "STANDBY"
-    status_color = "#39FF14" if is_dispatched else "#555"
+    status_color = "#00C853" if is_dispatched else "#999" # تعديل اللون ليتناسب مع الأبيض
     
     c4.markdown(f"""<div class="kpi-card" style="border-left: 5px solid {status_color};">
-        <div style="font-size: 11px; color: #aaa;">STATUS</div>
+        <div style="font-size: 11px; color: #555;">STATUS</div>
         <div style="color: {status_color}; font-size: 20px; font-weight: bold;">{status_text}</div>
     </div>""", unsafe_allow_html=True)
 
@@ -237,14 +270,15 @@ def render_local_view(zone_name):
         load_pct_weak = 95 if (not is_dispatched and local_deficit_gw > 0) else 40
         fig_w = go.Figure(go.Indicator(mode="gauge+number", value=load_pct_weak, title={'text': "Weak Transformers (Load %)"}, 
                                        gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "red" if load_pct_weak > 90 else "#FFA500"}}))
-        fig_w.update_layout(paper_bgcolor="#0E1117", font={'color': "white"}, height=250)
+        # [Visual Update]: White Background Logic
+        fig_w.update_layout(paper_bgcolor="white", font={'color': "black"}, height=250)
         g1.plotly_chart(fig_w, use_container_width=True)
 
         load_pct_strong = 60
         if is_dispatched: load_pct_strong = 75
         fig_s = go.Figure(go.Indicator(mode="gauge+number", value=load_pct_strong, title={'text': "Modern Substations (Load %)"}, 
-                                       gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "#00E676"}}))
-        fig_s.update_layout(paper_bgcolor="#0E1117", font={'color': "white"}, height=250)
+                                       gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "#00C853"}}))
+        fig_s.update_layout(paper_bgcolor="white", font={'color': "black"}, height=250)
         g2.plotly_chart(fig_s, use_container_width=True)
 
     with lt2:
@@ -302,7 +336,7 @@ else:
     total_city_load, total_res_load, raw_deficit, vpp_cap_mw, num_charging, num_v2g = calculate_grid_physics(pct_charging, pct_v2g)
     
     # ---------------------------------------------------------
-    # [Dynamic Dispatch Loop] تحديث مستمر للحسابات
+    # [Dynamic Dispatch Loop]
     # ---------------------------------------------------------
     if st.session_state.dispatch_active:
         deficit_mw = raw_deficit * 1000
@@ -378,13 +412,13 @@ else:
     map_data = []
     for zone, params in ZONE_WEIGHTS.items():
         status = "STABLE"
-        color = "#00E676"
+        color = "#00C853" # Green
         if net_deficit_gw > 0:
             status = "CRITICAL"
-            color = "#FF4444"
+            color = "#D32F2F" # Red
         elif st.session_state.dispatch_active or st.session_state.zones_data[zone]['dispatched_mw'] > 0:
             status = "INJECTING"
-            color = "#39FF14"
+            color = "#2962FF" # Blue for Active
             
         map_data.append({
             "Zone": zone, "lat": params['lat'], "lon": params['lon'], 
@@ -396,10 +430,11 @@ else:
     c_map1, c_map2 = st.columns([2, 1])
     with c_map1:
         st.subheader("🗺️ Live Grid Control Map")
+        # [Visual Update]: Light Map Style (Positron)
         fig_map = px.scatter_mapbox(df_map, lat="lat", lon="lon", color="Status", size="Load",
-                                    color_discrete_map={"INJECTING": "#39FF14", "CRITICAL": "#FF4444", "STABLE": "#00E676"},
-                                    zoom=10, mapbox_style="carto-darkmatter", height=450, size_max=40)
-        fig_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, paper_bgcolor="#0E1117", font=dict(color="white"))
+                                    color_discrete_map={"INJECTING": "#2962FF", "CRITICAL": "#D32F2F", "STABLE": "#00C853"},
+                                    zoom=10, mapbox_style="carto-positron", height=450, size_max=40)
+        fig_map.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, paper_bgcolor="white", font=dict(color="black"))
         st.plotly_chart(fig_map, use_container_width=True)
     
     with c_map2:
@@ -410,17 +445,17 @@ else:
             'lon': np.random.normal(46.67, 0.08, 1000),
             'Status': np.random.choice(['Charging', 'V2G Ready', 'Idle'], 1000, p=[pct_charging/100, pct_v2g/100, (100-pct_charging-pct_v2g)/100])
         })
-        color_map_fleet = {'Charging': '#FF4444', 'V2G Ready': '#39FF14', 'Idle': '#DDDDDD'}
+        color_map_fleet = {'Charging': '#D32F2F', 'V2G Ready': '#00C853', 'Idle': '#999999'}
+        # [Visual Update]: Light Map Style
         fig_fleet = px.scatter_mapbox(fleet_map_df, lat="lat", lon="lon", color="Status", color_discrete_map=color_map_fleet, 
-                                      zoom=9.5, mapbox_style="carto-darkmatter", height=450)
+                                      zoom=9.5, mapbox_style="carto-positron", height=450)
         
-        # [Visual Update: White Labels + Legend]
         fig_fleet.update_layout(
             margin={"r":0,"t":0,"l":0,"b":0}, 
-            paper_bgcolor="#0E1117", 
-            font=dict(color="white"), 
+            paper_bgcolor="white", 
+            font=dict(color="black"), 
             showlegend=True,
-            legend=dict(x=0, y=1, bgcolor="rgba(0,0,0,0.5)", font=dict(size=10, color="white"))
+            legend=dict(x=0, y=1, bgcolor="rgba(255,255,255,0.7)", font=dict(size=10, color="black"))
         )
         st.plotly_chart(fig_fleet, use_container_width=True)
 
@@ -449,18 +484,18 @@ else:
 
         fig_l = go.Figure()
         fig_l.add_vrect(x0=15, x1=18, fillcolor="red", opacity=0.1, annotation_text="Peak Zone", annotation_position="top left")
-        fig_l.add_trace(go.Scatter(x=hours, y=base_curve, name='BAU Load', line=dict(color='#FF4444', width=2, dash='dot')))
-        fig_l.add_trace(go.Scatter(x=hours, y=opt_curve, name='Optimized (V2G)', fill='tozeroy', line=dict(color='#39FF14', width=3)))
+        fig_l.add_trace(go.Scatter(x=hours, y=base_curve, name='BAU Load', line=dict(color='#D32F2F', width=2, dash='dot')))
+        fig_l.add_trace(go.Scatter(x=hours, y=opt_curve, name='Optimized (V2G)', fill='tozeroy', line=dict(color='#00C853', width=3)))
         
-        # [Visual Update: White Labels]
+        # [Visual Update]: White Template
         fig_l.update_layout(
-            template="plotly_dark", height=350, 
-            paper_bgcolor="#0E1117", margin=dict(l=0,r=0,t=10,b=0), 
-            font=dict(color="white"), 
+            template="plotly_white", height=350, 
+            paper_bgcolor="white", margin=dict(l=0,r=0,t=10,b=0), 
+            font=dict(color="black"), 
             xaxis_title="Hour", yaxis_title="GW",
-            xaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white")),
-            yaxis=dict(title_font=dict(color="white"), tickfont=dict(color="white")),
-            legend=dict(font=dict(color="white"))
+            xaxis=dict(title_font=dict(color="black"), tickfont=dict(color="black")),
+            yaxis=dict(title_font=dict(color="black"), tickfont=dict(color="black")),
+            legend=dict(font=dict(color="black"))
         )
         st.plotly_chart(fig_l, use_container_width=True)
 
@@ -471,16 +506,16 @@ else:
         for h in range(7): charging_profile[h] = vpp_cap_mw * 0.8
         
         fig_sc = go.Figure()
-        fig_sc.add_trace(go.Bar(x=hours, y=charging_profile, name='Fleet Load (MW)', marker_color='#00E676', yaxis='y'))
-        fig_sc.add_trace(go.Scatter(x=hours, y=prices, name='Tariff (SAR)', line=dict(color='#FF5252', width=3, dash='dot'), yaxis='y2'))
+        fig_sc.add_trace(go.Bar(x=hours, y=charging_profile, name='Fleet Load (MW)', marker_color='#00C853', yaxis='y'))
+        fig_sc.add_trace(go.Scatter(x=hours, y=prices, name='Tariff (SAR)', line=dict(color='#D32F2F', width=3, dash='dot'), yaxis='y2'))
         
-        # [Visual Update: White Labels]
+        # [Visual Update]: White Template
         fig_sc.update_layout(
-            template="plotly_dark", paper_bgcolor="#0E1117", height=350, 
-            font=dict(color="white"),
-            yaxis=dict(title="MW", tickfont=dict(color="#00E676"), title_font=dict(color="#00E676")),
-            yaxis2=dict(title="SAR", tickfont=dict(color="#FF5252"), title_font=dict(color="#FF5252"), overlaying="y", side="right"),
-            legend=dict(x=0, y=1.1, orientation="h", font=dict(color="white"))
+            template="plotly_white", paper_bgcolor="white", height=350, 
+            font=dict(color="black"),
+            yaxis=dict(title="MW", tickfont=dict(color="#00C853"), title_font=dict(color="#00C853")),
+            yaxis2=dict(title="SAR", tickfont=dict(color="#D32F2F"), title_font=dict(color="#D32F2F"), overlaying="y", side="right"),
+            legend=dict(x=0, y=1.1, orientation="h", font=dict(color="black"))
         )
         st.plotly_chart(fig_sc, use_container_width=True)
 
