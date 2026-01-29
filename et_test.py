@@ -10,124 +10,45 @@ import time
 # ---------------------------------------------------------
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]: النسخة البيضاء (Light Mode Corporate Style)
+# [Visual Styling]: تصميم احترافي للوضع النهاري (Corporate Light Theme)
 st.markdown("""
 <style>
-    /* 1. الخلفية العامة والنصوص */
-    .stApp { 
-        background-color: #FFFFFF; /* خلفية بيضاء ناصعة */
-        color: #000000;            /* نص أسود */
-    }
+    /* تحسين الخلفية والخطوط */
+    .stApp { background-color: #FAFAFA; color: #000000; }
     
-    /* 2. تنسيق العدادات (Metrics) */
-    
-    /* القيمة (الرقم الكبير) - أخضر غامق قليلاً للوضوح على الأبيض */
+    /* تحسين ألوان العدادات لتكون مقروءة على الأبيض */
     div[data-testid="stMetricValue"] { 
-        color: #00C853 !important; 
-        font-family: 'Courier New', monospace; 
-        margin-top: 5px !important;
+        color: #00C853 !important; /* أخضر غامق مريح للعين */
+        font-family: 'Segoe UI', sans-serif;
+        font-weight: 700 !important;
     }
     
-    /* العنوان العلوي (Label) */
     div[data-testid="stMetricLabel"] {
-        background-color: #F1F3F4 !important; /* رمادي فاتح جداً كخلفية للعنوان */
-        color: #000000 !important;           /* نص أسود */
-        padding: 4px 8px !important;
-        border-radius: 5px !important;
-        font-weight: bold !important;
-        font-size: 14px !important;
-        display: inline-block !important;
-        border: 1px solid #E0E0E0 !important;
+        color: #444444 !important; /* رمادي غامق للعناوين */
+    }
+
+    /* البطاقات */
+    .kpi-card { 
+        background-color: #FFFFFF; 
+        border: 1px solid #E0E0E0; 
+        padding: 20px; 
+        border-radius: 8px; 
+        text-align: center; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     
-    /* ضمان أن النصوص الداخلية سوداء */
-    div[data-testid="stMetricLabel"] > div,
-    div[data-testid="stMetricLabel"] p {
-        color: #000000 !important;
-    }
-
-    /* النص السفلي الصغير (Delta) */
-    div[data-testid="stMetricDelta"] {
-        color: #666666 !important; /* رمادي متوسط */
-        font-size: 0.9rem !important;
-    }
-    div[data-testid="stMetricDelta"] svg {
-        fill: #666666 !important;
-    }
-
-    /* 3. البطاقات (KPI Cards) */
-    .kpi-card { 
-        background-color: #F8F9FA;   /* رمادي فاتح جداً */
-        border: 1px solid #DEE2E6;   /* حدود رمادية خفيفة */
-        padding: 15px; 
-        border-radius: 5px; 
-        text-align: center; 
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* ظل خفيف */
-    }
-
-    /* 4. التابات (Tabs) */
-    .stTabs [data-baseweb="tab-list"] button {
-        background-color: #F1F3F4 !important;
-        color: #000000 !important;
-        font-weight: bold !important;
-        border-radius: 5px 5px 0px 0px;
-        border: 1px solid #E0E0E0;
-        margin-right: 2px;
-    }
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        background-color: #FFFFFF !important;
-        border-bottom: 4px solid #00C853 !important;
-        color: #000000 !important;
-    }
-
-    /* 5. تنسيق شريط التمرير (Scrollbar) - غامق ليتناقض مع الأبيض */
-    * { scrollbar-width: auto !important; scrollbar-color: #555555 #FFFFFF !important; }
-    ::-webkit-scrollbar { width: 18px !important; height: 18px !important; }
-    ::-webkit-scrollbar-track { background: #FFFFFF !important; }
-    ::-webkit-scrollbar-thumb { 
-        background-color: #555555 !important; /* شريط رمادي غامق */
-        border-radius: 10px !important; 
-        border: 4px solid #FFFFFF !important; 
-    }
-    ::-webkit-scrollbar-thumb:hover { background-color: #333333 !important; }
-
-    /* 6. تنسيق الأزرار (Buttons) */
+    /* الأزرار */
     div[data-testid="stButton"] > button {
-        background-color: #FFFFFF !important;
-        color: #000000 !important;
-        border: 1px solid #CCCCCC !important;
-        font-weight: bold !important;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        border-radius: 6px;
+        font-weight: bold;
+        border: 1px solid #00C853;
+        color: #00C853;
+        background-color: white;
     }
     div[data-testid="stButton"] > button:hover {
-        background-color: #F1F3F4 !important;
-        border-color: #00C853 !important;
-        color: #000000 !important;
+        background-color: #00C853;
+        color: white;
     }
-    /* زر الإيقاف الأحمر */
-    div[data-testid="stButton"] > button[kind="primary"] {
-        background-color: #D32F2F !important;
-        color: white !important;
-        border: none !important;
-    }
-    div[data-testid="stButton"] > button[kind="primary"]:hover {
-        background-color: #B71C1C !important;
-    }
-    
-    /* 7. توسيع المحتوى */
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-    
-    /* 8. تحسين Sidebar في الوضع الفاتح */
-    section[data-testid="stSidebar"] {
-        background-color: #F8F9FA;
-        border-right: 1px solid #DEE2E6;
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -139,7 +60,7 @@ CHARGING_CONCURRENCY_FACTOR = 0.85
 INVERTER_EFFICIENCY = 0.95 
 GRID_VOLTAGE_LIMIT_MW = 250.0 
 
-# تعريف أوزان الأحياء (Data Model)
+# تعريف أوزان الأحياء
 ZONE_WEIGHTS = {
     "Al-Olaya (Business)": {"load": 0.35, "ev_density": 0.40, "lat": 24.69, "lon": 46.68},
     "Al-Malqa (North)":    {"load": 0.25, "ev_density": 0.30, "lat": 24.81, "lon": 46.60},
@@ -148,9 +69,9 @@ ZONE_WEIGHTS = {
 }
 
 # ---------------------------------------------------------
-# 3. إدارة الحالة (Session State Management)
+# 3. إدارة الحالة (Session State)
 # ---------------------------------------------------------
-if 'industrial_load' not in st.session_state: st.session_state.industrial_load = 4.0 
+if 'industrial_load' not in st.session_state: st.session_state.industrial_load = 4.45 
 if 'global_grid_cap' not in st.session_state: st.session_state.global_grid_cap = 18.0 
 if 'base_residential_load' not in st.session_state: st.session_state.base_residential_load = 14.3
 if 'sell_price' not in st.session_state: st.session_state.sell_price = 0.80
@@ -164,26 +85,27 @@ if 'zones_data' not in st.session_state:
     }
 
 # ---------------------------------------------------------
-# 4. المحرك الفيزيائي (Physics Engine Core)
+# 4. المحرك الفيزيائي (Physics Engine)
 # ---------------------------------------------------------
 def calculate_grid_physics(pct_charging, pct_v2g):
     total_fleet = 100000
     
     # 1. حمل الشحن
     num_charging = int(total_fleet * (pct_charging / 100))
-    ev_load_total_kw = num_charging * AVG_CHARGER_CAPACITY_KW * CHARGING_CONCURRENCY_FACTOR 
+    ev_load_total_kw = num_charging * 7.0 * CHARGING_CONCURRENCY_FACTOR 
     ev_load_gw = ev_load_total_kw / 1e6 
     
     # 2. الأحمال الكلية
     total_res_load = st.session_state.base_residential_load + ev_load_gw
     total_city_load = total_res_load + st.session_state.industrial_load
     
-    # 3. العجز
+    # 3. العجز الخام
     grid_cap = st.session_state.global_grid_cap
     raw_deficit = max(0, total_city_load - grid_cap)
     
-    # 4. قدرة VPP
+    # 4. قدرة VPP الكلية (Max Potential)
     num_v2g = int(total_fleet * (pct_v2g / 100))
+    # الحساب الدقيق: (عدد السيارات * قدرة الشاحن * الكفاءة) / 1000 = ميجاواط
     vpp_cap_mw = (num_v2g * AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000.0 
     
     return total_city_load, total_res_load, raw_deficit, vpp_cap_mw, num_charging, num_v2g
@@ -194,29 +116,31 @@ def calculate_grid_physics(pct_charging, pct_v2g):
 def render_local_view(zone_name):
     pct_charging = st.session_state.get('pct_charging', 20)
     pct_v2g = st.session_state.get('pct_v2g', 60)
+    
     _, total_res_load, raw_grid_deficit, _, _, _ = calculate_grid_physics(pct_charging, pct_v2g)
     
     params = ZONE_WEIGHTS[zone_name]
     total_fleet_riyadh = 100000
     
+    # حساب الأحمال المحلية
     local_load_gw = total_res_load * params["load"]
     local_cap_gw = st.session_state.global_grid_cap * 0.8 * params["load"] 
     local_deficit_gw = max(0, local_load_gw - local_cap_gw)
-    st.session_state.zones_data[zone_name]['local_deficit'] = local_deficit_gw
     
+    # V2G المحلية
     local_v2g_cars = int(total_fleet_riyadh * params["ev_density"] * (pct_v2g/100))
     available_vpp_mw = (local_v2g_cars * AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000.0
     
     st.title(f"📍 {zone_name} | Substation Control")
     
-    # تنبيهات الشبكة
+    # حالة الشبكة العامة
     current_total_dispatched = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
     net_deficit = max(0, raw_grid_deficit - (current_total_dispatched/1000))
 
     if net_deficit > 0.005:
          st.error(f"🚨 NATIONAL GRID ALERT: Remaining Deficit {net_deficit:.3f} GW. Support Needed!")
     elif raw_grid_deficit > 0:
-         st.success(f"✅ GRID STABILIZED: VPP contribution active ({current_total_dispatched:.0f} MW).")
+         st.success(f"✅ GRID STABILIZED: VPP contribution active.")
     else:
          st.info("ℹ️ Grid Status: Nominal.")
 
@@ -234,15 +158,16 @@ def render_local_view(zone_name):
     
     is_dispatched = st.session_state.zones_data[zone_name]['dispatched_mw'] > 0
     status_text = "INJECTING" if is_dispatched else "STANDBY"
-    status_color = "#00C853" if is_dispatched else "#999" # تعديل اللون ليتناسب مع الأبيض
+    status_color = "#00C853" if is_dispatched else "#9E9E9E"
     
     c4.markdown(f"""<div class="kpi-card" style="border-left: 5px solid {status_color};">
-        <div style="font-size: 11px; color: #555;">STATUS</div>
-        <div style="color: {status_color}; font-size: 20px; font-weight: bold;">{status_text}</div>
+        <div style="font-size: 12px; color: #555;">STATUS</div>
+        <div style="color: {status_color}; font-size: 24px; font-weight: bold;">{status_text}</div>
     </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
     
+    # نضخ فقط ما هو مسموح به (سقف المحول)
     target_dispatch = min(available_vpp_mw, GRID_VOLTAGE_LIMIT_MW)
     
     c_btn, c_rest = st.columns([1, 2])
@@ -269,15 +194,14 @@ def render_local_view(zone_name):
         g1, g2 = st.columns(2)
         load_pct_weak = 95 if (not is_dispatched and local_deficit_gw > 0) else 40
         fig_w = go.Figure(go.Indicator(mode="gauge+number", value=load_pct_weak, title={'text': "Weak Transformers (Load %)"}, 
-                                       gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "red" if load_pct_weak > 90 else "#FFA500"}}))
-        # [Visual Update]: White Background Logic
+                                     gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "red" if load_pct_weak > 90 else "#FFA500"}}))
         fig_w.update_layout(paper_bgcolor="white", font={'color': "black"}, height=250)
         g1.plotly_chart(fig_w, use_container_width=True)
 
         load_pct_strong = 60
         if is_dispatched: load_pct_strong = 75
         fig_s = go.Figure(go.Indicator(mode="gauge+number", value=load_pct_strong, title={'text': "Modern Substations (Load %)"}, 
-                                       gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "#00C853"}}))
+                                     gauge={'axis': {'range': [0, 120]}, 'bar': {'color': "#00C853"}}))
         fig_s.update_layout(paper_bgcolor="white", font={'color': "black"}, height=250)
         g2.plotly_chart(fig_s, use_container_width=True)
 
@@ -300,11 +224,7 @@ with st.sidebar:
     st.markdown("---")
     st.header("⚙️ Simulation Params")
     
-    st.session_state.global_grid_cap = st.slider("Grid Capacity (GW)", 15.0, 25.0, 18.0)
-    st.session_state.base_residential_load = st.slider("Base Res. Load (GW)", 8.0, 20.0, 14.3)
-    st.session_state.industrial_load = st.slider("Ind. Load (GW)", 2.0, 8.0, 4.0)
-    
-    st.markdown("---")
+    st.session_state.industrial_load = st.slider("Ind. Load (GW)", 2.0, 8.0, 4.45) # تم ضبطه ليعطي عجزاً مبدئياً
     st.session_state.sell_price = st.slider("Sell Price (SAR/kWh)", 0.1, 2.0, 0.80)
     st.session_state.buy_price = st.slider("Buy Price (SAR/kWh)", 0.05, 1.0, 0.18)
     
@@ -317,9 +237,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 👨‍💻 Developed By")
     st.markdown("**Eng. Mohamed Alwedaa**")
-    st.caption("Energy Data Strategist | V2G Specialist")
     
-    linkedin_url = "https://www.linkedin.com/in/"
+    linkedin_url = "https://www.linkedin.com/in/" 
     st.markdown(f"""
     <a href="{linkedin_url}" target="_blank" style="text-decoration: none;">
         <button style="background-color: #0077b5; color: white; border: none; padding: 8px; border-radius: 5px; width: 100%; cursor: pointer;">
@@ -331,63 +250,59 @@ with st.sidebar:
 if selected_zone != "Riyadh City Overview":
     render_local_view(selected_zone)
 else:
+    # --- [Dashboard] العرض الرئيسي لمدينة الرياض ---
     st.title("🇸🇦 Riyadh City | VPP Strategic Analytics")
     
+    # 1. الحسابات الفيزيائية
     total_city_load, total_res_load, raw_deficit, vpp_cap_mw, num_charging, num_v2g = calculate_grid_physics(pct_charging, pct_v2g)
     
-    # ---------------------------------------------------------
-    # [Dynamic Dispatch Loop]
-    # ---------------------------------------------------------
-    if st.session_state.dispatch_active:
-        deficit_mw = raw_deficit * 1000
-        
-        if vpp_cap_mw > 0:
-            dispatch_ratio = min(1.0, deficit_mw / vpp_cap_mw) if deficit_mw > 0 else 0
-        else:
-            dispatch_ratio = 0
-        
-        for z, params in ZONE_WEIGHTS.items():
-            local_fleet = 100000 * params['ev_density']
-            local_max_cap = (local_fleet * (pct_v2g/100) * AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000
-            
-            target_local_dispatch = local_max_cap * dispatch_ratio
-            
-            st.session_state.zones_data[z]['dispatched_mw'] = target_local_dispatch
-            st.session_state.zones_data[z]['payout'] = target_local_dispatch * 1000 * st.session_state.sell_price * 4
-            st.session_state.zones_data[z]['status'] = "STABILIZED" if target_local_dispatch > 0 else "STABLE"
-
+    # 2. حساب الضخ الفعلي (Active Dispatch)
+    # نجمع ما يتم ضخه من الأحياء حالياً
     manual_dispatch_sum = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
-    total_dispatched_mw = manual_dispatch_sum
+    
+    # إذا كان التحكم المركزي مفعلاً، نستخدمه
+    if st.session_state.dispatch_active:
+        total_dispatched_mw = manual_dispatch_sum
+    else:
+        total_dispatched_mw = manual_dispatch_sum
 
+    # 3. حساب العجز الصافي بعد التدخل
     net_deficit_gw = max(0, raw_deficit - (total_dispatched_mw/1000.0))
 
-    # KPIs
+    # --- مؤشرات الأداء (KPIs) ---
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Total Load", f"{total_city_load:.2f} GW")
     
+    # [تصحيح] حساب السعة المتبقية (Unused VPP Cap)
+    # السعة المتبقية = السعة الكلية المتاحة - السعة المستخدمة حالياً
     remaining_vpp_mw = max(0, vpp_cap_mw - total_dispatched_mw)
-    one_car_capacity_mw = (AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000
-    remaining_cars = int(remaining_vpp_mw / one_car_capacity_mw) if remaining_vpp_mw > 0 else 0
-
+    
+    # [تصحيح] حساب عدد السيارات المتبقية (تقريبي بناءً على الطاقة المتبقية)
+    one_car_mw = (AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000.0
+    remaining_cars = int(remaining_vpp_mw / one_car_mw) if one_car_mw > 0 else 0
+    
     k2.metric(
         "Unused VPP Cap", 
         f"{remaining_vpp_mw:.0f} MW", 
-        f"{remaining_cars:,} Cars Left", 
+        f"{remaining_cars:,} Cars Idle", # عرض السيارات المتبقية بدلاً من المستخدمة
         delta_color="off"
     )
     
+    # حالة العجز
     if raw_deficit > 0:
+        # إذا تم تغطية العجز بالكامل (أو بقي شيء لا يذكر)
         if net_deficit_gw < 0.05 and total_dispatched_mw > 0:
-            k3.metric("Grid Deficit", "STABILIZED ✅", f"Raw: {raw_deficit:.2f} GW")
+            k3.metric("Grid Deficit", "STABILIZED ✅", f"Raw was: {raw_deficit:.2f} GW")
         else:
             k3.metric("Grid Deficit", f"{net_deficit_gw:.3f} GW", "CRITICAL ⚠️", delta_color="inverse")
     else:
         k3.metric("Grid Deficit", "Surplus", "Stable")
         
-    k4.metric("EV Load", f"+{num_charging*AVG_CHARGER_CAPACITY_KW/1000:.1f} MW", f"{num_charging:,} Cars")
+    k4.metric("EV Load", f"+{num_charging*7/1000:.1f} MW", f"{num_charging:,} Cars")
 
     st.markdown("---")
 
+    # لوحة التحكم المركزي
     col_map_ctrl, col_act_ctrl = st.columns([3, 1])
     with col_act_ctrl:
         st.markdown("#### Central Dispatch")
@@ -397,28 +312,45 @@ else:
         else:
             btn_txt = "⚡ ACTIVATE ALL VPPs"
 
-        if raw_deficit > 0:
+        # الزر يظهر فقط إذا كان هناك عجز يحتاج تدخل
+        if raw_deficit > 0 or st.session_state.dispatch_active:
             if st.button(btn_txt):
                 st.session_state.dispatch_active = not st.session_state.dispatch_active
-                if not st.session_state.dispatch_active:
+                
+                if st.session_state.dispatch_active:
+                    # تفعيل كل الأحياء
+                    for z, params in ZONE_WEIGHTS.items():
+                        local_fleet = 100000 * params['ev_density']
+                        # حساب القدرة المتاحة للحي
+                        local_mw_available = (local_fleet * (pct_v2g/100) * AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000
+                        # تحديد الهدف: إما سعة الحي القصوى أو سقف الشبكة
+                        target = min(local_mw_available, GRID_VOLTAGE_LIMIT_MW)
+                        
+                        st.session_state.zones_data[z]['dispatched_mw'] = target
+                        st.session_state.zones_data[z]['payout'] = target * 1000 * st.session_state.sell_price * 4
+                        st.session_state.zones_data[z]['status'] = "STABILIZED"
+                else:
+                    # إيقاف كل الأحياء
                     for z in st.session_state.zones_data:
                         st.session_state.zones_data[z]['dispatched_mw'] = 0
                         st.session_state.zones_data[z]['payout'] = 0
                         st.session_state.zones_data[z]['status'] = "STABLE"
+                
                 st.rerun()
         else:
-            st.info("Grid Stable. No Action Needed.")
+            st.info("Grid Stable. No Central Action Needed.")
 
+    # الخرائط والرسوم البيانية
     map_data = []
     for zone, params in ZONE_WEIGHTS.items():
         status = "STABLE"
-        color = "#00C853" # Green
+        color = "#00C853"
         if net_deficit_gw > 0:
             status = "CRITICAL"
-            color = "#D32F2F" # Red
+            color = "#D32F2F"
         elif st.session_state.dispatch_active or st.session_state.zones_data[zone]['dispatched_mw'] > 0:
             status = "INJECTING"
-            color = "#2962FF" # Blue for Active
+            color = "#2962FF"
             
         map_data.append({
             "Zone": zone, "lat": params['lat'], "lon": params['lon'], 
@@ -430,7 +362,6 @@ else:
     c_map1, c_map2 = st.columns([2, 1])
     with c_map1:
         st.subheader("🗺️ Live Grid Control Map")
-        # [Visual Update]: Light Map Style (Positron)
         fig_map = px.scatter_mapbox(df_map, lat="lat", lon="lon", color="Status", size="Load",
                                     color_discrete_map={"INJECTING": "#2962FF", "CRITICAL": "#D32F2F", "STABLE": "#00C853"},
                                     zoom=10, mapbox_style="carto-positron", height=450, size_max=40)
@@ -446,19 +377,12 @@ else:
             'Status': np.random.choice(['Charging', 'V2G Ready', 'Idle'], 1000, p=[pct_charging/100, pct_v2g/100, (100-pct_charging-pct_v2g)/100])
         })
         color_map_fleet = {'Charging': '#D32F2F', 'V2G Ready': '#00C853', 'Idle': '#999999'}
-        # [Visual Update]: Light Map Style
         fig_fleet = px.scatter_mapbox(fleet_map_df, lat="lat", lon="lon", color="Status", color_discrete_map=color_map_fleet, 
                                       zoom=9.5, mapbox_style="carto-positron", height=450)
-        
-        fig_fleet.update_layout(
-            margin={"r":0,"t":0,"l":0,"b":0}, 
-            paper_bgcolor="white", 
-            font=dict(color="black"), 
-            showlegend=True,
-            legend=dict(x=0, y=1, bgcolor="rgba(255,255,255,0.7)", font=dict(size=10, color="black"))
-        )
+        fig_fleet.update_layout(margin={"r":0,"t":0,"l":0,"b":0}, paper_bgcolor="white", font=dict(color="black"), showlegend=False)
         st.plotly_chart(fig_fleet, use_container_width=True)
 
+    # التبويبات الثلاثة
     t1, t2, t3 = st.tabs(["📈 Load Curve Analysis", "🔌 Charging Profile", "📋 Operations Settlement"])
     
     with t1:
@@ -486,8 +410,6 @@ else:
         fig_l.add_vrect(x0=15, x1=18, fillcolor="red", opacity=0.1, annotation_text="Peak Zone", annotation_position="top left")
         fig_l.add_trace(go.Scatter(x=hours, y=base_curve, name='BAU Load', line=dict(color='#D32F2F', width=2, dash='dot')))
         fig_l.add_trace(go.Scatter(x=hours, y=opt_curve, name='Optimized (V2G)', fill='tozeroy', line=dict(color='#00C853', width=3)))
-        
-        # [Visual Update]: White Template
         fig_l.update_layout(
             template="plotly_white", height=350, 
             paper_bgcolor="white", margin=dict(l=0,r=0,t=10,b=0), 
@@ -509,7 +431,6 @@ else:
         fig_sc.add_trace(go.Bar(x=hours, y=charging_profile, name='Fleet Load (MW)', marker_color='#00C853', yaxis='y'))
         fig_sc.add_trace(go.Scatter(x=hours, y=prices, name='Tariff (SAR)', line=dict(color='#D32F2F', width=3, dash='dot'), yaxis='y2'))
         
-        # [Visual Update]: White Template
         fig_sc.update_layout(
             template="plotly_white", paper_bgcolor="white", height=350, 
             font=dict(color="black"),
@@ -538,6 +459,7 @@ else:
                 else:
                     status = "🟢 Active (Local)"
                 
+                # حساب السيارات المشاركة
                 one_car_capacity_mw = (AVG_CHARGER_CAPACITY_KW * INVERTER_EFFICIENCY) / 1000
                 z_cars = int(z_mw / one_car_capacity_mw)
             else:
