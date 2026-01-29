@@ -8,10 +8,10 @@ import time
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة (System Configuration)
 # ---------------------------------------------------------
-# [Critical Fix]: التأكد من تفعيل وضع الشاشة العريضة
+#   وضع الشاشة العريضة
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]: التنسيق الأبيض الكامل (تابات، أزرار، سكرول)
+# [Visual Styling]:  (تابات، أزرار، سكرول)
 st.markdown("""
 <style>
     /* 1. الخلفية العامة */
@@ -35,11 +35,31 @@ st.markdown("""
         border-bottom: 4px solid #39FF14 !important;
     }
 
-    /* 5. إصلاح السكرول بار (Scrollbar) - إجباري */
-    ::-webkit-scrollbar { width: 16px !important; height: 16px !important; }
-    ::-webkit-scrollbar-track { background: #0E1117 !important; }
-    ::-webkit-scrollbar-thumb { background-color: #FFFFFF !important; border-radius: 10px !important; border: 3px solid #0E1117 !important; }
-    ::-webkit-scrollbar-thumb:hover { background-color: #cccccc !important; }
+    /* 5. تنسيق شريط التمرير (Scrollbar) - النسخة العريضة والبيضاء */
+    
+    /* عرض الشريط (الحاوية) */
+    ::-webkit-scrollbar {
+        width: 22px !important;   /* عرض كبير جداً وواضح */
+        height: 22px !important;  /* ارتفاع للشريط الأفقي إن وجد */
+    }
+    
+    /* لون المسار (الخلفية) */
+    ::-webkit-scrollbar-track {
+        background: #0E1117 !important; /* نفس لون خلفية الموقع */
+    }
+    
+    /* لون المقبض (الجزء المتحرك) */
+    ::-webkit-scrollbar-thumb {
+        background-color: #FFFFFF !important; /* أبيض ناصع 100% */
+        border-radius: 12px !important;       /* تدوير الحواف */
+        border: 5px solid #0E1117 !important; /* حدود غامقة ليفصل الأبيض عن الخلفية */
+    }
+    
+    /* عند وضع الماوس عليه (يبقى أبيض) */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #FFFFFF !important; /* يظل أبيض لا يتغير */
+        border: 4px solid #0E1117 !important; /* تكبير بسيط عند اللمس */
+    }
 
     /* 6. إصلاح الأزرار (Buttons) */
     div[data-testid="stButton"] > button {
