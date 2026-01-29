@@ -35,8 +35,32 @@ st.markdown("""
         border-bottom: 4px solid #39FF14 !important;
     }
 
+   
     /* 5. تنسيق شريط التمرير (Scrollbar) - النسخة العريضة والبيضاء */
     
+    /* عرض الشريط (الحاوية) */
+    ::-webkit-scrollbar {
+        width: 22px !important;   /* عرض كبير جداً وواضح */
+        height: 22px !important;  /* ارتفاع للشريط الأفقي إن وجد */
+    }
+    
+    /* لون المسار (الخلفية) */
+    ::-webkit-scrollbar-track {
+        background: #0E1117 !important; /* نفس لون خلفية الموقع */
+    }
+    
+    /* لون المقبض (الجزء المتحرك) */
+    ::-webkit-scrollbar-thumb {
+        background-color: #FFFFFF !important; /* أبيض ناصع 100% */
+        border-radius: 12px !important;       /* تدوير الحواف */
+        border: 5px solid #0E1117 !important; /* حدود غامقة ليفصل الأبيض عن الخلفية */
+    }
+    
+    /* عند وضع الماوس عليه (يبقى أبيض) */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #FFFFFF !important; /* يظل أبيض لا يتغير */
+        border: 4px solid #0E1117 !important; /* تكبير بسيط عند اللمس */
+    }
     /* عرض الشريط (الحاوية) */
     ::-webkit-scrollbar {
         width: 22px !important;   /* عرض كبير جداً وواضح */
