@@ -10,50 +10,63 @@ import time
 # ---------------------------------------------------------
 st.markdown("""
 <style>
-    /* 1. الخلفية العامة ولون النص الأساسي */
+    /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. تنسيق الأرقام والعدادات */
+    /* 2. الأرقام */
     div[data-testid="stMetricValue"] { color: #39FF14 !important; font-family: 'Courier New', monospace; }
     
-    /* 3. تنسيق بطاقات الحالة (KPI Cards) */
+    /* 3. البطاقات */
     .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
 
-    /* 4. تنسيق التابات (Tabs) */
+    /* 4. التابات (Tabs) - أبيض بخط أسود */
     .stTabs [data-baseweb="tab-list"] button {
-        background-color: white !important; 
-        color: black !important;           
-        font-weight: bold;                 
-        border-radius: 5px 5px 0px 0px;    
+        background-color: white !important;
+        color: black !important;
+        font-weight: bold !important;
+        border-radius: 5px 5px 0px 0px;
     }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        background-color: #f0f0f0 !important; 
-        border-bottom: 3px solid #39FF14 !important;
+        background-color: #f0f0f0 !important;
+        border-bottom: 4px solid #39FF14 !important;
     }
 
-    /* 5. تنسيق شريط التمرير (Scrollbar) */
-    ::-webkit-scrollbar { width: 14px; height: 14px; }
-    ::-webkit-scrollbar-track { background: #161B22; }
-    ::-webkit-scrollbar-thumb { background-color: white !important; border-radius: 10px; border: 3px solid #161B22; }
-    ::-webkit-scrollbar-thumb:hover { background-color: #cccccc !important; }
+    /* 5. إصلاح السكرول بار (Scrollbar) - إجباري */
+    /* لجميع المتصفحات الحديثة */
+    ::-webkit-scrollbar {
+        width: 16px !important;  /* جعلته أعرض قليلاً ليظهر بوضوح */
+        height: 16px !important;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #0E1117 !important; /* لون الخلفية غامق */
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: #FFFFFF !important; /* أبيض ناصع إجباري */
+        border-radius: 10px !important;
+        border: 3px solid #0E1117 !important; /* حدود لفصله عن الخلفية */
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #cccccc !important; /* رمادي عند اللمس */
+    }
 
-    /* 6. --- [جديد] إصلاح ألوان الأزرار --- */
-    /* الزر العادي (Secondary) - يجعله أبيض بخط أسود */
+    /* 6. إصلاح الأزرار (Buttons) */
+    /* الأزرار العادية: بيضاء بخط أسود */
     div[data-testid="stButton"] > button {
         background-color: white !important;
         color: black !important;
         border: 1px solid #ccc !important;
         font-weight: bold !important;
     }
-    
-    /* تأثير عند مرور الماوس (Hover) */
     div[data-testid="stButton"] > button:hover {
         background-color: #e0e0e0 !important;
         border-color: #39FF14 !important;
         color: black !important;
     }
-
-    /* الزر الأحمر (Primary/Stop) - نحافظ عليه أحمر بخط أبيض */
+    
+    /* زر الإيقاف (الأحمر): يبقى أحمر */
     div[data-testid="stButton"] > button[kind="primary"] {
         background-color: #FF4B4B !important;
         color: white !important;
