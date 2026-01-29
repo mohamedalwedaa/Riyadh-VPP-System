@@ -17,13 +17,22 @@ st.markdown("""
     /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. الأرقام */
-    div[data-testid="stMetricValue"] { color: #39FF14 !important; font-family: 'Courier New', monospace; }
-    
+    /* 2. تنسيق العدادات (Metrics) - [مهم جداً] */
+    /* الرقم الكبير (القيمة) */
+    div[data-testid="stMetricValue"] { 
+        color: #39FF14 !important; 
+        font-family: 'Courier New', monospace; 
+    }
+    /* العنوان الصغير (Label) - لونه أبيض إجباري */
+    div[data-testid="stMetricLabel"] {
+        color: #FFFFFF !important;
+        font-weight: bold !important;
+    }
+
     /* 3. البطاقات */
     .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
 
-    /* 4. التابات (Tabs) - أبيض بخط أسود */
+    /* 4. التابات (Tabs) */
     .stTabs [data-baseweb="tab-list"] button {
         background-color: white !important;
         color: black !important;
@@ -35,41 +44,33 @@ st.markdown("""
         border-bottom: 4px solid #39FF14 !important;
     }
 
-   
-   /* 5. تنسيق شريط التمرير (Scrollbar) - حل نهائي شامل */
-    
-    /* أولاً: دعم Firefox (مهم جداً لأنه لا يقبل webkit) */
+    /* 5. تنسيق شريط التمرير (Scrollbar) - الحل الشامل */
+    /* دعم Firefox */
     * {
-        scrollbar-width: auto !important;      /* عرض كامل */
-        scrollbar-color: #FFFFFF #0E1117 !important; /* الإبهام أبيض، المسار أسود */
+        scrollbar-width: auto !important;
+        scrollbar-color: #FFFFFF #0E1117 !important;
     }
-
-    /* ثانياً: دعم Chrome, Edge, Safari */
+    /* دعم Chrome, Edge, Safari */
     ::-webkit-scrollbar {
-        width: 22px !important;   /* عرض عريض جداً */
+        width: 22px !important;
         height: 22px !important;
     }
-    
     ::-webkit-scrollbar-track {
-        background: #0E1117 !important; /* لون الخلفية أسود */
+        background: #0E1117 !important;
     }
-    
     ::-webkit-scrollbar-thumb {
-        background-color: #FFFFFF !important; /* أبيض ناصع */
+        background-color: #FFFFFF !important;
         border-radius: 12px !important;
-        border: 5px solid #0E1117 !important; /* حدود سوداء لفصل الأبيض */
+        border: 5px solid #0E1117 !important;
     }
-    
     ::-webkit-scrollbar-thumb:hover {
-        background-color: #e6e6e6 !important; /* تغيير طفيف عند اللمس */
+        background-color: #e6e6e6 !important;
     }
-    
-    /* إجبار الشريط أن يظهر دائماً حتى لو لم يتحرك الماوس */
     ::-webkit-scrollbar-thumb:window-inactive {
         background-color: #FFFFFF !important;
     }
 
-    /* 6. إصلاح الأزرار (Buttons) */
+    /* 6. تنسيق الأزرار (Buttons) */
     div[data-testid="stButton"] > button {
         background-color: white !important;
         color: black !important;
@@ -81,8 +82,7 @@ st.markdown("""
         border-color: #39FF14 !important;
         color: black !important;
     }
-    
-    /* زر الإيقاف (الأحمر): يبقى أحمر */
+    /* زر الإيقاف الأحمر */
     div[data-testid="stButton"] > button[kind="primary"] {
         background-color: #FF4B4B !important;
         color: white !important;
@@ -93,7 +93,7 @@ st.markdown("""
         color: white !important;
     }
     
-    /* 7. [جديد] توسيع المحتوى (Padding Fix) */
+    /* 7. توسيع المحتوى */
     .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
