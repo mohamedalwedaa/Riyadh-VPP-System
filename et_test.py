@@ -8,56 +8,74 @@ import time
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة (System Configuration)
 # ---------------------------------------------------------
+# [Critical Fix]: التأكد من تفعيل وضع الشاشة العريضة
+st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
+
+# [Visual Styling]: التنسيق الأبيض الكامل (تابات، أزرار، سكرول)
 st.markdown("""
 <style>
-    /* 1. الخلفية العامة ولون النص الأساسي */
+    /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. تنسيق الأرقام والعدادات */
+    /* 2. الأرقام */
     div[data-testid="stMetricValue"] { color: #39FF14 !important; font-family: 'Courier New', monospace; }
     
-    /* 3. تنسيق بطاقات الحالة (KPI Cards) */
+    /* 3. البطاقات */
     .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
 
-    /* 4. تنسيق التابات (Tabs) - طلبك الجديد */
+    /* 4. التابات (Tabs) - أبيض بخط أسود */
     .stTabs [data-baseweb="tab-list"] button {
-        background-color: white !important; /* خلفية بيضاء */
-        color: black !important;           /* خط أسود */
-        font-weight: bold;                 /* خط عريض */
-        border-radius: 5px 5px 0px 0px;    /* حواف دائرية من الأعلى */
+        background-color: white !important;
+        color: black !important;
+        font-weight: bold !important;
+        border-radius: 5px 5px 0px 0px;
     }
-    
-    /* تظليل التاب المختار ليكون مميزاً قليلاً */
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        background-color: #f0f0f0 !important; 
-        border-bottom: 3px solid #39FF14 !important; /* خط أخضر تحت المختار */
+        background-color: #f0f0f0 !important;
+        border-bottom: 4px solid #39FF14 !important;
     }
 
-    /* 5. تنسيق شريط التمرير (Scrollbar) - طلبك الجديد */
-    /* لمتصفحات Chrome, Edge, Safari */
-    ::-webkit-scrollbar {
-        width: 14px;
-        height: 14px;
+    /* 5. إصلاح السكرول بار (Scrollbar) - إجباري */
+    ::-webkit-scrollbar { width: 16px !important; height: 16px !important; }
+    ::-webkit-scrollbar-track { background: #0E1117 !important; }
+    ::-webkit-scrollbar-thumb { background-color: #FFFFFF !important; border-radius: 10px !important; border: 3px solid #0E1117 !important; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #cccccc !important; }
+
+    /* 6. إصلاح الأزرار (Buttons) */
+    div[data-testid="stButton"] > button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+        font-weight: bold !important;
     }
-    ::-webkit-scrollbar-track {
-        background: #161B22; /* لون المسار غامق */
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: white !important; /* لون الشريط المتحرك أبيض */
-        border-radius: 10px;
-        border: 3px solid #161B22; /* حدود لفصله عن الخلفية */
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #cccccc !important; /* لون رمادي عند المرور عليه */
+    div[data-testid="stButton"] > button:hover {
+        background-color: #e0e0e0 !important;
+        border-color: #39FF14 !important;
+        color: black !important;
     }
     
-    /* لمتصفح Firefox */
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: white #161B22;
+    /* زر الإيقاف (الأحمر): يبقى أحمر */
+    div[data-testid="stButton"] > button[kind="primary"] {
+        background-color: #FF4B4B !important;
+        color: white !important;
+        border: none !important;
     }
+    div[data-testid="stButton"] > button[kind="primary"]:hover {
+        background-color: #ff3333 !important;
+        color: white !important;
+    }
+    
+    /* 7. [جديد] توسيع المحتوى (Padding Fix) */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
 </style>
 """, unsafe_allow_html=True)
+
 # ---------------------------------------------------------
 # 2. الثوابت والمعايير الهندسية (Engineering Constants)
 # ---------------------------------------------------------
@@ -266,7 +284,6 @@ else:
     if st.session_state.dispatch_active:
         deficit_mw = raw_deficit * 1000
         
-        # التوزيع النسبي (Proportional)
         if vpp_cap_mw > 0:
             dispatch_ratio = min(1.0, deficit_mw / vpp_cap_mw) if deficit_mw > 0 else 0
         else:
@@ -282,7 +299,6 @@ else:
             st.session_state.zones_data[z]['payout'] = target_local_dispatch * 1000 * st.session_state.sell_price * 4
             st.session_state.zones_data[z]['status'] = "STABILIZED" if target_local_dispatch > 0 else "STABLE"
 
-    # تجميع الضخ
     manual_dispatch_sum = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
     total_dispatched_mw = manual_dispatch_sum
 
