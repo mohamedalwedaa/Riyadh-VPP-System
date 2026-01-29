@@ -8,25 +8,28 @@ import time
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة (System Configuration)
 # ---------------------------------------------------------
-#   وضع الشاشة العريضة
+# وضع الشاشة العريضة
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]:  (تابات، أزرار، سكرول)
+# [Visual Styling]: (تابات، أزرار، سكرول، ونصوص بيضاء)
 st.markdown("""
 <style>
     /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. تنسيق العدادات (Metrics) - [مهم جداً] */
+    /* 2. تنسيق العدادات (Metrics) - [تم التعديل هنا] */
+    
     /* الرقم الكبير (القيمة) */
     div[data-testid="stMetricValue"] { 
         color: #39FF14 !important; 
         font-family: 'Courier New', monospace; 
     }
-    /* العنوان الصغير (Label) - لونه أبيض إجباري */
+    
+    /* [إصلاح هام]: العنوان الصغير (Label) مثل Local Deficit */
     div[data-testid="stMetricLabel"] {
-        color: #FFFFFF !important;
+        color: #FFFFFF !important; /* أبيض ناصع إجباري */
         font-weight: bold !important;
+        font-size: 14px !important;
     }
 
     /* 3. البطاقات */
@@ -182,6 +185,7 @@ def render_local_view(zone_name):
     
     st.title(f"📍 {zone_name} | Substation Control")
     
+    # تنبيهات الشبكة
     current_total_dispatched = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
     net_deficit = max(0, raw_grid_deficit - (current_total_dispatched/1000))
 
@@ -312,6 +316,7 @@ else:
     if st.session_state.dispatch_active:
         deficit_mw = raw_deficit * 1000
         
+        # التوزيع النسبي (Proportional)
         if vpp_cap_mw > 0:
             dispatch_ratio = min(1.0, deficit_mw / vpp_cap_mw) if deficit_mw > 0 else 0
         else:
@@ -327,6 +332,7 @@ else:
             st.session_state.zones_data[z]['payout'] = target_local_dispatch * 1000 * st.session_state.sell_price * 4
             st.session_state.zones_data[z]['status'] = "STABILIZED" if target_local_dispatch > 0 else "STABLE"
 
+    # تجميع الضخ
     manual_dispatch_sum = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
     total_dispatched_mw = manual_dispatch_sum
 
