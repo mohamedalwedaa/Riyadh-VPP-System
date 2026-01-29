@@ -36,53 +36,37 @@ st.markdown("""
     }
 
    
-    /* 5. تنسيق شريط التمرير (Scrollbar) - النسخة العريضة والبيضاء */
+   /* 5. تنسيق شريط التمرير (Scrollbar) - حل نهائي شامل */
     
-    /* عرض الشريط (الحاوية) */
+    /* أولاً: دعم Firefox (مهم جداً لأنه لا يقبل webkit) */
+    * {
+        scrollbar-width: auto !important;      /* عرض كامل */
+        scrollbar-color: #FFFFFF #0E1117 !important; /* الإبهام أبيض، المسار أسود */
+    }
+
+    /* ثانياً: دعم Chrome, Edge, Safari */
     ::-webkit-scrollbar {
-        width: 22px !important;   /* عرض كبير جداً وواضح */
-        height: 22px !important;  /* ارتفاع للشريط الأفقي إن وجد */
+        width: 22px !important;   /* عرض عريض جداً */
+        height: 22px !important;
     }
     
-    /* لون المسار (الخلفية) */
     ::-webkit-scrollbar-track {
-        background: #0E1117 !important; /* نفس لون خلفية الموقع */
+        background: #0E1117 !important; /* لون الخلفية أسود */
     }
     
-    /* لون المقبض (الجزء المتحرك) */
     ::-webkit-scrollbar-thumb {
-        background-color: #FFFFFF !important; /* أبيض ناصع 100% */
-        border-radius: 12px !important;       /* تدوير الحواف */
-        border: 5px solid #0E1117 !important; /* حدود غامقة ليفصل الأبيض عن الخلفية */
+        background-color: #FFFFFF !important; /* أبيض ناصع */
+        border-radius: 12px !important;
+        border: 5px solid #0E1117 !important; /* حدود سوداء لفصل الأبيض */
     }
     
-    /* عند وضع الماوس عليه (يبقى أبيض) */
     ::-webkit-scrollbar-thumb:hover {
-        background-color: #FFFFFF !important; /* يظل أبيض لا يتغير */
-        border: 4px solid #0E1117 !important; /* تكبير بسيط عند اللمس */
-    }
-    /* عرض الشريط (الحاوية) */
-    ::-webkit-scrollbar {
-        width: 22px !important;   /* عرض كبير جداً وواضح */
-        height: 22px !important;  /* ارتفاع للشريط الأفقي إن وجد */
+        background-color: #e6e6e6 !important; /* تغيير طفيف عند اللمس */
     }
     
-    /* لون المسار (الخلفية) */
-    ::-webkit-scrollbar-track {
-        background: #0E1117 !important; /* نفس لون خلفية الموقع */
-    }
-    
-    /* لون المقبض (الجزء المتحرك) */
-    ::-webkit-scrollbar-thumb {
-        background-color: #FFFFFF !important; /* أبيض ناصع 100% */
-        border-radius: 12px !important;       /* تدوير الحواف */
-        border: 5px solid #0E1117 !important; /* حدود غامقة ليفصل الأبيض عن الخلفية */
-    }
-    
-    /* عند وضع الماوس عليه (يبقى أبيض) */
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #FFFFFF !important; /* يظل أبيض لا يتغير */
-        border: 4px solid #0E1117 !important; /* تكبير بسيط عند اللمس */
+    /* إجبار الشريط أن يظهر دائماً حتى لو لم يتحرك الماوس */
+    ::-webkit-scrollbar-thumb:window-inactive {
+        background-color: #FFFFFF !important;
     }
 
     /* 6. إصلاح الأزرار (Buttons) */
