@@ -10,44 +10,36 @@ import time
 # ---------------------------------------------------------
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]: كود التصميم المصحح (النسخة النووية لإصلاح الألوان) ☢️
+# [Visual Styling]: كود التصميم (خلفيات بيضاء للعناوين + سكرول بار)
 st.markdown("""
 <style>
     /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. تنسيق العدادات (Metrics) - الإصلاح الشامل */
+    /* 2. تنسيق العدادات (Metrics) - [تعديل الخلفية البيضاء] */
     
     /* القيمة (الرقم الكبير الأخضر) */
     div[data-testid="stMetricValue"] { 
         color: #39FF14 !important; 
         font-family: 'Courier New', monospace; 
+        margin-top: 5px !important;
     }
     
-    /* العنوان العلوي (Label) مثل Total Load - إجبار الأبيض */
+    /* العنوان العلوي (Label) - خلفية بيضاء وخط أسود */
     div[data-testid="stMetricLabel"] {
-        color: #FFFFFF !important;
-        font-weight: 900 !important; /* خط سميك جداً للوضوح */
-        font-size: 1.1rem !important;
+        background-color: #FFFFFF !important; /* خلفية بيضاء */
+        color: #000000 !important;           /* خط أسود */
+        padding: 4px 8px !important;         /* مسافة داخلية */
+        border-radius: 5px !important;       /* حواف دائرية */
+        font-weight: bold !important;
+        display: inline-block !important;    /* لكي يكون العرض على قد الكلام فقط */
+        font-size: 14px !important;
     }
-    /* استهداف أي عنصر نصي داخل العنوان لضمان التلوين */
-    div[data-testid="stMetricLabel"] > div,
-    div[data-testid="stMetricLabel"] > label,
+    
+    /* التأكد من أن النص الداخلي أسود أيضاً */
+    div[data-testid="stMetricLabel"] > div, 
     div[data-testid="stMetricLabel"] p {
-        color: #FFFFFF !important;
-    }
-
-    /* النص السفلي الصغير (Delta) مثل "Cars Left" - إجبار الأبيض */
-    div[data-testid="stMetricDelta"] {
-        color: #E0E0E0 !important; /* أبيض مائل للرمادي الفاتح جداً */
-        font-size: 0.9rem !important;
-    }
-    div[data-testid="stMetricDelta"] > div {
-        color: #E0E0E0 !important;
-    }
-    /* تلوين الأسهم إن وجدت */
-    div[data-testid="stMetricDelta"] svg {
-        fill: #E0E0E0 !important;
+        color: #000000 !important;
     }
 
     /* 3. البطاقات */
@@ -71,7 +63,6 @@ st.markdown("""
     ::-webkit-scrollbar-track { background: #0E1117 !important; }
     ::-webkit-scrollbar-thumb { background-color: #FFFFFF !important; border-radius: 12px !important; border: 5px solid #0E1117 !important; }
     ::-webkit-scrollbar-thumb:hover { background-color: #e6e6e6 !important; }
-    ::-webkit-scrollbar-thumb:window-inactive { background-color: #FFFFFF !important; }
 
     /* 6. تنسيق الأزرار (Buttons) */
     div[data-testid="stButton"] > button {
@@ -85,6 +76,7 @@ st.markdown("""
         border-color: #39FF14 !important;
         color: black !important;
     }
+    /* زر الإيقاف الأحمر */
     div[data-testid="stButton"] > button[kind="primary"] {
         background-color: #FF4B4B !important;
         color: white !important;
