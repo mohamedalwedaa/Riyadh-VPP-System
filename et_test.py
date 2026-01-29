@@ -8,33 +8,51 @@ import time
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة (System Configuration)
 # ---------------------------------------------------------
-# وضع الشاشة العريضة
 st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡", initial_sidebar_state="expanded")
 
-# [Visual Styling]: (تابات، أزرار، سكرول، ونصوص بيضاء)
+# [Visual Styling]: كود التصميم المصحح (النسخة النووية لإصلاح الألوان) ☢️
 st.markdown("""
 <style>
     /* 1. الخلفية العامة */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
     
-    /* 2. تنسيق العدادات (Metrics) - [تم التعديل هنا] */
+    /* 2. تنسيق العدادات (Metrics) - الإصلاح الشامل */
     
-    /* الرقم الكبير (القيمة) */
+    /* القيمة (الرقم الكبير الأخضر) */
     div[data-testid="stMetricValue"] { 
         color: #39FF14 !important; 
         font-family: 'Courier New', monospace; 
     }
     
-    /* [إصلاح هام]: العنوان الصغير (Label) مثل Local Deficit */
+    /* العنوان العلوي (Label) مثل Total Load - إجبار الأبيض */
     div[data-testid="stMetricLabel"] {
-        color: #FFFFFF !important; /* أبيض ناصع إجباري */
-        font-weight: bold !important;
-        font-size: 14px !important;
+        color: #FFFFFF !important;
+        font-weight: 900 !important; /* خط سميك جداً للوضوح */
+        font-size: 1.1rem !important;
+    }
+    /* استهداف أي عنصر نصي داخل العنوان لضمان التلوين */
+    div[data-testid="stMetricLabel"] > div,
+    div[data-testid="stMetricLabel"] > label,
+    div[data-testid="stMetricLabel"] p {
+        color: #FFFFFF !important;
+    }
+
+    /* النص السفلي الصغير (Delta) مثل "Cars Left" - إجبار الأبيض */
+    div[data-testid="stMetricDelta"] {
+        color: #E0E0E0 !important; /* أبيض مائل للرمادي الفاتح جداً */
+        font-size: 0.9rem !important;
+    }
+    div[data-testid="stMetricDelta"] > div {
+        color: #E0E0E0 !important;
+    }
+    /* تلوين الأسهم إن وجدت */
+    div[data-testid="stMetricDelta"] svg {
+        fill: #E0E0E0 !important;
     }
 
     /* 3. البطاقات */
-    /* إجبار أي نص داخل العنوان أن يكون أبيض (يقضي على اللون الرمادي) */
-   .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
+    .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
+
     /* 4. التابات (Tabs) */
     .stTabs [data-baseweb="tab-list"] button {
         background-color: white !important;
@@ -47,31 +65,13 @@ st.markdown("""
         border-bottom: 4px solid #39FF14 !important;
     }
 
-    /* 5. تنسيق شريط التمرير (Scrollbar) - الحل الشامل */
-    /* دعم Firefox */
-    * {
-        scrollbar-width: auto !important;
-        scrollbar-color: #FFFFFF #0E1117 !important;
-    }
-    /* دعم Chrome, Edge, Safari */
-    ::-webkit-scrollbar {
-        width: 22px !important;
-        height: 22px !important;
-    }
-    ::-webkit-scrollbar-track {
-        background: #0E1117 !important;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: #FFFFFF !important;
-        border-radius: 12px !important;
-        border: 5px solid #0E1117 !important;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: #e6e6e6 !important;
-    }
-    ::-webkit-scrollbar-thumb:window-inactive {
-        background-color: #FFFFFF !important;
-    }
+    /* 5. تنسيق شريط التمرير (Scrollbar) */
+    * { scrollbar-width: auto !important; scrollbar-color: #FFFFFF #0E1117 !important; }
+    ::-webkit-scrollbar { width: 22px !important; height: 22px !important; }
+    ::-webkit-scrollbar-track { background: #0E1117 !important; }
+    ::-webkit-scrollbar-thumb { background-color: #FFFFFF !important; border-radius: 12px !important; border: 5px solid #0E1117 !important; }
+    ::-webkit-scrollbar-thumb:hover { background-color: #e6e6e6 !important; }
+    ::-webkit-scrollbar-thumb:window-inactive { background-color: #FFFFFF !important; }
 
     /* 6. تنسيق الأزرار (Buttons) */
     div[data-testid="stButton"] > button {
@@ -85,7 +85,6 @@ st.markdown("""
         border-color: #39FF14 !important;
         color: black !important;
     }
-    /* زر الإيقاف الأحمر */
     div[data-testid="stButton"] > button[kind="primary"] {
         background-color: #FF4B4B !important;
         color: white !important;
@@ -113,7 +112,7 @@ st.markdown("""
 AVG_CHARGER_CAPACITY_KW = 8.5 
 CHARGING_CONCURRENCY_FACTOR = 0.85 
 INVERTER_EFFICIENCY = 0.95 
-GRID_VOLTAGE_LIMIT_MW = 250.0  # سقف الأمان للمحول الفرعي
+GRID_VOLTAGE_LIMIT_MW = 250.0 
 
 # تعريف أوزان الأحياء (Data Model)
 ZONE_WEIGHTS = {
@@ -316,7 +315,6 @@ else:
     if st.session_state.dispatch_active:
         deficit_mw = raw_deficit * 1000
         
-        # التوزيع النسبي (Proportional)
         if vpp_cap_mw > 0:
             dispatch_ratio = min(1.0, deficit_mw / vpp_cap_mw) if deficit_mw > 0 else 0
         else:
@@ -332,7 +330,6 @@ else:
             st.session_state.zones_data[z]['payout'] = target_local_dispatch * 1000 * st.session_state.sell_price * 4
             st.session_state.zones_data[z]['status'] = "STABILIZED" if target_local_dispatch > 0 else "STABLE"
 
-    # تجميع الضخ
     manual_dispatch_sum = sum([d['dispatched_mw'] for z, d in st.session_state.zones_data.items()])
     total_dispatched_mw = manual_dispatch_sum
 
