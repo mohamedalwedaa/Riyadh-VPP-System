@@ -33,7 +33,16 @@ st.markdown("""
     }
 
     /* 3. البطاقات */
-    .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
+    /* إجبار أي نص داخل العنوان أن يكون أبيض (يقضي على اللون الرمادي) */
+    div[data-testid="stMetricLabel"] > div {
+        color: #FFFFFF !important;
+    }
+    div[data-testid="stMetricLabel"] p {
+        color: #FFFFFF !important;
+    }
+    div[data-testid="stMetricLabel"] span {
+        color: #FFFFFF !important;
+    }
 
     /* 4. التابات (Tabs) */
     .stTabs [data-baseweb="tab-list"] button {
