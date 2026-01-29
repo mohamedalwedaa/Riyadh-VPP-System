@@ -8,13 +8,54 @@ import time
 # ---------------------------------------------------------
 # 1. إعدادات الصفحة (System Configuration)
 # ---------------------------------------------------------
-st.set_page_config(layout="wide", page_title="Riyadh VPP Command Center", page_icon="⚡")
-
 st.markdown("""
 <style>
+    /* 1. الخلفية العامة ولون النص الأساسي */
     .stApp { background-color: #0E1117; color: #FAFAFA; }
+    
+    /* 2. تنسيق الأرقام والعدادات */
     div[data-testid="stMetricValue"] { color: #39FF14 !important; font-family: 'Courier New', monospace; }
+    
+    /* 3. تنسيق بطاقات الحالة (KPI Cards) */
     .kpi-card { background-color: #161B22; border: 1px solid #30363D; padding: 15px; border-radius: 5px; text-align: center; }
+
+    /* 4. تنسيق التابات (Tabs) - طلبك الجديد */
+    .stTabs [data-baseweb="tab-list"] button {
+        background-color: white !important; /* خلفية بيضاء */
+        color: black !important;           /* خط أسود */
+        font-weight: bold;                 /* خط عريض */
+        border-radius: 5px 5px 0px 0px;    /* حواف دائرية من الأعلى */
+    }
+    
+    /* تظليل التاب المختار ليكون مميزاً قليلاً */
+    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+        background-color: #f0f0f0 !important; 
+        border-bottom: 3px solid #39FF14 !important; /* خط أخضر تحت المختار */
+    }
+
+    /* 5. تنسيق شريط التمرير (Scrollbar) - طلبك الجديد */
+    /* لمتصفحات Chrome, Edge, Safari */
+    ::-webkit-scrollbar {
+        width: 14px;
+        height: 14px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #161B22; /* لون المسار غامق */
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: white !important; /* لون الشريط المتحرك أبيض */
+        border-radius: 10px;
+        border: 3px solid #161B22; /* حدود لفصله عن الخلفية */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #cccccc !important; /* لون رمادي عند المرور عليه */
+    }
+    
+    /* لمتصفح Firefox */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: white #161B22;
+    }
 </style>
 """, unsafe_allow_html=True)
 
